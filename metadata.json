@@ -1,0 +1,6 @@
+{
+  "name": "HOBA - أملو تقليدي مغربي",
+  "description": "متجر أملو هوبا المغربي الأصيل، محضر من لوز بلدي محمر وزيت أركان أصلي وعسل حر طبيعي. الدفع عند الاستلام مع التوصيل السريع لجميع مدن المغرب.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
