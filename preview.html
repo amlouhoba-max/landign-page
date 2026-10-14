@@ -251,13 +251,20 @@
         </p>
 
         <!-- حقول الاستمارة -->
-        <form id="orderForm" class="space-y-3 mt-4">
+        <!-- حقول الاستمارة -->
+        <form id="orderForm" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="space-y-3 mt-4">
           <div>
             <div class="relative">
               <input
                 id="fullName"
+                name="preview_cust_name"
                 type="text"
                 placeholder="الاسم الكامل"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                data-lpignore="true"
                 class="w-full bg-white border-2 border-slate-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 rounded-2xl py-3 pr-11 pl-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none transition-all"
                 required
               />
@@ -271,8 +278,17 @@
             <div class="relative">
               <input
                 id="phone"
+                name="preview_cust_phone"
                 type="tel"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                maxlength="10"
                 placeholder="رقم الهاتف (مثال: 0612345678)"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+                data-lpignore="true"
                 dir="ltr"
                 class="w-full bg-white border-2 border-slate-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 rounded-2xl py-3 pr-11 pl-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 outline-none transition-all"
                 required
@@ -487,7 +503,7 @@
     };
 
     let selectedVariant = VARIANTS.louz;
-    const PHONE_NUMBER = "212717928687";
+    const PHONE_NUMBER = window.atob ? window.atob("MjEyNzE3OTI4Njg3") : "212717928687";
 
     function selectVariant(id) {
       selectedVariant = VARIANTS[id];
@@ -532,6 +548,18 @@
     const phoneInput = document.getElementById('phone');
     const errorMsg = document.getElementById('errorMsg');
 
+    // منع الحروف والرموز نهائياً في خانة الهاتف
+    phoneInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/\D/g, '').slice(0, 10);
+      errorMsg.classList.add('hidden');
+    });
+
+    phoneInput.addEventListener('keydown', function(e) {
+      const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter', 'Home', 'End'];
+      if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) return;
+      if (!/^[0-9]$/.test(e.key)) e.preventDefault();
+    });
+
     orderForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const name = fullNameInput.value.trim();
@@ -543,7 +571,7 @@
         return;
       }
       if (!phone || phone.length < 9) {
-        showError('المرجو إدخال رقم هاتف صحيح للتواصل معك');
+        showError('المرجو إدخال رقم هاتف صحيح مكون من 10 أرقام');
         phoneInput.focus();
         return;
       }

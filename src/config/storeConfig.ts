@@ -20,6 +20,19 @@ export interface ProductVariant {
   badgeColorClass: string;
 }
 
+// Hidden & protected Webhook endpoint (Obfuscated fallback + ENV priority)
+const _ENC_SHEET_URL = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4Rzc4MDBENXBLMWpwbm1tSzEtcUMtVTMxZ1ZrU29xa0R0VllyaVBlLUdhclVOSGRiM0R0ZXF3OTdiLU1SUkZ6UzRvQS9leGVj";
+const getHiddenWebhookUrl = (): string => {
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_SHEET_WEBHOOK_URL) {
+    return import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL;
+  }
+  try {
+    return typeof window !== 'undefined' && window.atob ? window.atob(_ENC_SHEET_URL) : '';
+  } catch {
+    return '';
+  }
+};
+
 export const storeConfig = {
   // 1. معلومات المتجر والمنتج العامة
   product: {
@@ -33,8 +46,8 @@ export const storeConfig = {
     deliveryText: "🚚 توصيل سريع ومجاني لجميع المدن المغربية والدفع عند الاستلام بعد المعاينة",
   },
 
-  // رابط الـ Webhook الخاص بـ Google Sheet لتسجيل الطلبيات تلقائياً
-  googleSheetWebhookUrl: "https://script.google.com/macros/s/AKfycbxG7800D5pK1jpnmmK1-qC-U31gVkSoqkDtVYriPe-GarUNHdb3Dteqw97b-MRRFzS4oA/exec",
+  // رابط الـ Webhook الخاص بـ Google Sheet لتسجيل الطلبيات تلقائياً (محمي ومخفي)
+  googleSheetWebhookUrl: getHiddenWebhookUrl(),
 
   // 2. تشكيلة النكهات والأسعار (Variants & Pricing)
   variants: [

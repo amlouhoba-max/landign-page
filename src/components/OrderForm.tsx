@@ -24,6 +24,39 @@ export function OrderForm({
 
   const { currency, deliveryText } = storeConfig.product;
 
+  // قبول الأرقام فقط في خانة الهاتف ومنع الحروف نهائياً
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setPhone(onlyDigits);
+    if (formError) setFormError('');
+  };
+
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const allowed = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
+      'Tab',
+      'Enter',
+      'Home',
+      'End',
+    ];
+    if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) {
+      return;
+    }
+    if (!/^[0-9]$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFullName(e.target.value);
+    if (formError) setFormError('');
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -34,13 +67,13 @@ export function OrderForm({
     }
 
     if (!phone.trim() || phone.trim().length < 9) {
-      setFormError('المرجو إدخال رقم هاتف صحيح (مثال: 0612345678)');
+      setFormError('المرجو إدخال رقم هاتف صحيح مكون من 10 أرقام (مثال: 0612345678)');
       return;
     }
 
     setFormError('');
 
-    // ✅ Save order to localStorage + sync to Google Sheets automatically
+    // ✅ إرسال الطلبية تلقائياً إلى Google Sheets مع حماية البيانات
     const newOrder = orderService.createOrder({
       customerName: fullName.trim(),
       phone: phone.trim(),
@@ -270,20 +303,35 @@ export function OrderForm({
       </p>
 
       {/* 3. Customer Info Form */}
-      <form onSubmit={handleFormSubmit} className="space-y-3 mt-4">
+      <form
+        onSubmit={handleFormSubmit}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        className="space-y-3 mt-4"
+      >
         {/* Full Name Input */}
         <div>
-          <label className="sr-only" htmlFor="fullname">
+          <label className="sr-only" htmlFor="customer_name_field">
             الاسم الكامل
           </label>
           <div className="relative">
             <input
               ref={nameInputRef}
-              id="fullname"
+              id="customer_name_field"
+              name="hoba_client_name"
               type="text"
               value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              onChange={handleNameChange}
               placeholder="الاسم الكامل"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              data-lpignore="true"
+              data-form-type="other"
+              aria-autocomplete="none"
               className="w-full bg-white border-2 border-slate-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 rounded-2xl py-3 pr-11 pl-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 transition-all outline-none"
               required
             />
@@ -293,18 +341,30 @@ export function OrderForm({
           </div>
         </div>
 
-        {/* Phone Input */}
+        {/* Phone Input (Accepts NUMBERS ONLY & No previous suggestions) */}
         <div>
-          <label className="sr-only" htmlFor="phone">
+          <label className="sr-only" htmlFor="customer_phone_field">
             رقم الهاتف
           </label>
           <div className="relative">
             <input
-              id="phone"
+              id="customer_phone_field"
+              name="hoba_client_phone"
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={10}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={handlePhoneChange}
+              onKeyDown={handlePhoneKeyDown}
               placeholder="رقم الهاتف (مثال: 0612345678)"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+              data-lpignore="true"
+              data-form-type="other"
+              aria-autocomplete="none"
               className="w-full bg-white border-2 border-slate-300 focus:border-emerald-700 focus:ring-2 focus:ring-emerald-700/20 rounded-2xl py-3 pr-11 pl-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 transition-all outline-none"
               dir="ltr"
               required

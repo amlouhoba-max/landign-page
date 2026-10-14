@@ -16,35 +16,25 @@ export interface Order {
   notes?: string;
 }
 
-const STORAGE_KEY = 'hoba_orders_data_v1';
+// مسح أي بيانات سابقة لزبائن من المتصفح لضمان الخصوصية التامة
+try {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.removeItem('hoba_orders_data_v1');
+  }
+} catch {
+  // ignore
+}
 
 export const orderService = {
   /**
-   * استرجاع جميع الطلبيات المسجلة
+   * عدم تخزين أو عرض بيانات الزبائن السابقين لضمان الخصوصية والأمان
    */
   getOrders(): Order[] {
-    try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch (e) {
-      console.error('Failed to load orders from localStorage', e);
-      return [];
-    }
+    return [];
   },
 
   /**
-   * حفظ الطلبيات محلياً
-   */
-  saveOrders(orders: Order[]): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-    } catch (e) {
-      console.error('Failed to save orders to localStorage', e);
-    }
-  },
-
-  /**
-   * إنشاء طلب جديد وإرساله تلقائياً إلى Google Sheets
+   * إنشاء طلب جديد وإرساله مباشرة إلى Google Sheets بدون حفظ بيانات الناس السابقة في المتصفح
    */
   createOrder(orderData: {
     customerName: string;
@@ -56,11 +46,10 @@ export const orderService = {
     quantity?: number;
     notes?: string;
   }): Order {
-    const orders = this.getOrders();
-    const nextNumber = 7001 + orders.length;
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
 
     const newOrder: Order = {
-      id: `HBA-${nextNumber}`,
+      id: `HBA-${randomSuffix}`,
       customerName: orderData.customerName,
       phone: orderData.phone,
       variantId: orderData.variantId,
@@ -74,10 +63,7 @@ export const orderService = {
       notes: orderData.notes || '',
     };
 
-    const updated = [newOrder, ...orders];
-    this.saveOrders(updated);
-
-    // إرسال الطلب لـ Google Sheets في الخلفية
+    // إرسال الطلب لـ Google Sheets في الخلفية مباشرة
     this.syncToGoogleSheets(newOrder);
 
     return newOrder;
