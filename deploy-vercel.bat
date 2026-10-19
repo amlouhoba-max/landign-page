@@ -4,7 +4,10 @@ echo ========================================================
 echo   Deploying Hoba Amlou to Vercel (Production)
 echo ========================================================
 echo.
-set PATH=C:\Program Files\nodejs;%PATH%
+echo   Building production files...
+call npm run build
+echo.
+echo   Deploying to Vercel (Production)...
 node node_modules\vercel\dist\vc.js --prod
 echo.
 echo ========================================================

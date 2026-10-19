@@ -8,6 +8,8 @@ interface OrderFormProps {
   nameInputRef: React.RefObject<HTMLInputElement | null>;
   selectedVariant: ProductVariant;
   onSelectVariant: (variant: ProductVariant) => void;
+  orderSuccess?: boolean;
+  setOrderSuccess?: (success: boolean) => void;
 }
 
 export function OrderForm({
@@ -15,12 +17,17 @@ export function OrderForm({
   nameInputRef,
   selectedVariant,
   onSelectVariant,
+  orderSuccess: externalOrderSuccess,
+  setOrderSuccess: externalSetOrderSuccess,
 }: OrderFormProps) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [formError, setFormError] = useState('');
-  const [orderSubmitted, setOrderSubmitted] = useState(false);
+  const [internalOrderSuccess, setInternalOrderSuccess] = useState(false);
   const [submittedOrderId, setSubmittedOrderId] = useState('');
+
+  const orderSuccess = externalOrderSuccess !== undefined ? externalOrderSuccess : internalOrderSuccess;
+  const setOrderSuccess = externalSetOrderSuccess || setInternalOrderSuccess;
 
   const { currency, deliveryText } = storeConfig.product;
 
@@ -84,11 +91,11 @@ export function OrderForm({
     });
 
     setSubmittedOrderId(newOrder.id);
-    setOrderSubmitted(true);
+    setOrderSuccess(true);
   };
 
   // ✅ Thank-you screen shown after successful order
-  if (orderSubmitted) {
+  if (orderSuccess) {
     return (
       <section
         ref={formRef}
@@ -160,10 +167,13 @@ export function OrderForm({
           <button
             type="button"
             onClick={() => {
-              setOrderSubmitted(false);
+              setOrderSuccess(false);
               setFullName('');
               setPhone('');
               setSubmittedOrderId('');
+              setTimeout(() => {
+                nameInputRef.current?.focus();
+              }, 100);
             }}
             className="w-full flex items-center justify-center gap-2 bg-white border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-50 active:scale-[0.98] font-['Cairo',sans-serif] font-black text-base py-3 px-6 rounded-2xl shadow-sm transition-all cursor-pointer"
           >
