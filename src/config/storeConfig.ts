@@ -2,6 +2,12 @@
  * ========================================================
  * ⚙️ ملف إعدادات المتجر والمنتجات (Store Configuration)
  * ========================================================
+ * Pack Gourmand: 3 نكهات (أملو + كاجو + بيستاش) بثمن واحد
+ *
+ * لتغيير الثمن، بدّل فقط هاد 3 قيم:
+ *   - PACK_PRICE      : الثمن الحالي
+ *   - PACK_OLD_PRICE  : الثمن القديم (المشطب)
+ *   - PACK_DISCOUNT   : نسبة التخفيض (نص)
  */
 
 export interface ProductVariant {
@@ -20,6 +26,12 @@ export interface ProductVariant {
   badgeColorClass: string;
 }
 
+// ------------------ ✏️ الأثمنة (بدّل هنا فقط) ------------------
+const PACK_PRICE = 399;
+const PACK_OLD_PRICE = 489;
+const PACK_DISCOUNT = "-18%";
+// ---------------------------------------------------------------
+
 // Hidden & protected Webhook endpoint (Obfuscated fallback + ENV priority)
 const _ENC_SHEET_URL = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4Rzc4MDBENXBLMWpwbm1tSzEtcUMtVTMxZ1ZrU29xa0R0VllyaVBlLUdhclVOSGRiM0R0ZXF3OTdiLU1SUkZ6UzRvQS9leGVj";
 const getHiddenWebhookUrl = (): string => {
@@ -36,71 +48,41 @@ const getHiddenWebhookUrl = (): string => {
 export const storeConfig = {
   // 1. معلومات المتجر والمنتج العامة
   product: {
-    name: "HÔBA AMLOU",
-    fullTitle: "أملو هوبا المغربي الأصلي الفاخر (وزن 700g)",
-    defaultPrice: 0,
+    name: "HÔBA PACK GOURMAND",
+    fullTitle: "Pack Gourmand من هوبا: 3 منتجات في واحد (أملو + كاجو + بيستاش)",
+    defaultPrice: PACK_PRICE,
     currency: "درهم",
-    weight: "700g",
+    weight: "3 × 700g",
     image: "/assets/images/hoba_amlou_product.jpg",
-    ribbonText: "✦ تشكيلة هوبا الفاخرة - وزن 700g أصيل 100% ✦",
+    ribbonText: "✦ Pack Gourmand من هوبا - 3 نكهات × 700g أصيلة 100% ✦",
     deliveryText: "🚚 توصيل سريع ومجاني لجميع المدن المغربية والدفع عند الاستلام بعد المعاينة",
   },
 
   // رابط الـ Webhook الخاص بـ Google Sheet لتسجيل الطلبيات تلقائياً (محمي ومخفي)
   googleSheetWebhookUrl: getHiddenWebhookUrl(),
 
-  // 2. تشكيلة النكهات والأسعار (Variants & Pricing)
+  // 2. الباك (Variants & Pricing): عنصر واحد بثمن واحد
   variants: [
     {
-      id: "louz",
-      name: "أملو اللوز البلدي (Amande)",
-      shortName: "أملو اللوز",
-      weight: "700g",
-      price: 0,
-      oldPrice: 0,
-      discountPercentage: "-18%",
-      badge: "الأكثر طلباً ⭐",
-      tagline: "لوز بلدي محمص + عسل حر + زيت أركان أصيل",
-      icon: "🌰",
+      id: "pack",
+      name: "Pack Gourmand: 3 نكهات (أملو + كاجو + بيستاش)",
+      shortName: "Pack Gourmand",
+      weight: "3 × 700g",
+      price: PACK_PRICE,
+      oldPrice: PACK_OLD_PRICE,
+      discountPercentage: PACK_DISCOUNT,
+      badge: "عرض مميز ⭐",
+      tagline: "أملو اللوز + أملو الكاجو + أملو البيستاش، مع عسل حر وزيت أركان أصيل",
+      icon: "🎁",
       borderClass: "border-amber-700/40",
       bgLightClass: "bg-amber-50/50",
       badgeColorClass: "bg-amber-700 text-amber-50",
-    },
-    {
-      id: "cajou",
-      name: "أملو الكاجو الفاخر (Cajou)",
-      shortName: "أملو الكاجو",
-      weight: "700g",
-      price: 0,
-      oldPrice: 0,
-      discountPercentage: "-18%",
-      badge: "مذاق كريمي فاخر 🍯",
-      tagline: "كاجو فاخر ناعم + عسل حر + زيت أركان أصيل",
-      icon: "🥜",
-      borderClass: "border-orange-700/40",
-      bgLightClass: "bg-orange-50/50",
-      badgeColorClass: "bg-orange-700 text-orange-50",
-    },
-    {
-      id: "pistache",
-      name: "أملو البيستاش الملكي (Pistache)",
-      shortName: "أملو البيستاش",
-      weight: "700g",
-      price: 0,
-      oldPrice: 0,
-      discountPercentage: "-20%",
-      badge: "الفخامة والمذاق الملكي 👑",
-      tagline: "فستق حلبي فاخر + عسل حر + زيت أركان أصيل",
-      icon: "🟢",
-      borderClass: "border-emerald-700/40",
-      bgLightClass: "bg-emerald-50/50",
-      badgeColorClass: "bg-emerald-800 text-emerald-50",
     },
   ] as ProductVariant[],
 
   // 3. الشريط الإخباري العلوي (Top Announcement Bar)
   announcement: {
-    text: "ستصلك طلبيتك كما هي معروضة في هذه الصفحة، بالحجم العائلي 700g والتوصيل مجاني لجميع المدن 🇲🇦",
+    text: "ستصلك طلبيتك كما هي معروضة في هذه الصفحة: 3 قنينات بحجم 700g والتوصيل مجاني لجميع المدن 🇲🇦",
   },
 
   // 4. بطاقات الثقة والضمانات (Trust Guarantees)
@@ -114,8 +96,8 @@ export const storeConfig = {
     },
     {
       id: "weight",
-      title: "الحجم العائلي الكبير 700g",
-      description: "قنينات زجاجية كبيرة بوزن صافي 700 غرام معبأة بأعلى معايير الجودة والنظافة.",
+      title: "3 قنينات بالحجم العائلي 700g",
+      description: "قنينات زجاجية كبيرة بوزن صافي 700 غرام لكل واحدة، معبأة بأعلى معايير الجودة والنظافة.",
       colorClass: "border-[#b57a2c] text-[#965e18] bg-[#b57a2c]",
       iconType: "package",
     },
