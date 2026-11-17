@@ -33,7 +33,7 @@ const PACK_DISCOUNT = "-18%";
 // ---------------------------------------------------------------
 
 // Hidden & protected Webhook endpoint (Obfuscated fallback + ENV priority)
-const _ENC_SHEET_URL = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4Rzc4MDBENXBLMWpwbm1tSzEtcUMtVTMxZ1ZrU29xa0R0VllyaVBlLUdhclVOSGRiM0R0ZXF3OTdiLU1SUkZ6UzRvQS9leGVj";
+const _ENC_SHEET_URL = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4SjNvYmQyeDJrRURIaWxYZGpkcEFVODFDcmRRVVVFRjZrVW1TZGxOa1E4SGZEV1pPY1hnWHdTWVZqU3JiOHBPc04vZXhlYw==";
 const getHiddenWebhookUrl = (): string => {
   if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_SHEET_WEBHOOK_URL) {
     return import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL;
